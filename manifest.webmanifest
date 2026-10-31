@@ -1,6 +1,6 @@
 {
-  "name": "Body Temple",
-  "short_name": "Body Temple",
+  "name": "BodyTemple",
+  "short_name": "BodyTemple",
   "description": "Il diario di allenamento: schede, serie e progressi.",
   "start_url": "./?app=1",
   "scope": "./",
