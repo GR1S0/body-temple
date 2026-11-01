@@ -772,12 +772,12 @@ function toast(msg, undo) {
 }
 
 function viewLoading() {
-  return `<header class="top"><div class="eyebrow">Body Temple</div><h1>Body <span>Temple</span></h1></header>
+  return `<header class="top"><div class="eyebrow">BodyTemple</div><h1>Body<span>Temple</span></h1></header>
   <div class="empty"><b>Collegamento al database…</b>Schede, esercizi e storico arrivano tra un attimo.</div>`;
 }
 function viewNoDb() {
   if (window.BT_SETUP) return window.BT_SETUP(S.err);
-  return `<header class="top"><div class="eyebrow">Body Temple</div><h1>Body <span>Temple</span></h1></header>
+  return `<header class="top"><div class="eyebrow">BodyTemple</div><h1>Body<span>Temple</span></h1></header>
   <div class="empty"><b>Il database non è raggiungibile da qui.</b>Apri questa pagina da claude.ai, dal browser o dall'app Claude, con il tuo account: i dati si sincronizzano tra telefono e Mac. ${S.err ? `<span class="small">Dettaglio: ${esc(S.err)}</span>` : ''}</div>`;
 }
 
@@ -1592,8 +1592,8 @@ function viewProfilo() {
       <button class="btn" type="button" data-a="save-profile" style="align-self:flex-start">Salva il contesto</button></section>
     <section class="stack"><div class="sec-head"><h2>Bande elastiche</h2><p class="note">Dalla più leggera alla più dura, separate da virgole. Servono per suggerire il passo successivo.</p></div>
       <div class="row"><input class="search" id="p-bands" value="${esc(bands().join(', '))}" style="flex:1"><button class="btn" type="button" data-a="save-bands">Salva</button></div></section>
-    <section class="stack"><div class="sec-head"><h2>App sul telefono</h2><p class="note">Installa Body Temple sulla schermata Home, con la sua icona: apri la pagina dal telefono con Chrome e tocca Installa.</p></div>
-      <div class="row"><img class="appicon" src="${ICON_PNG}" alt="Icona di Body Temple"><a class="btn" href="${INSTALL_URL}" target="_blank" rel="noopener">Apri la pagina d'installazione ↗</a></div></section>
+    <section class="stack"><div class="sec-head"><h2>App sul telefono</h2><p class="note">Installa BodyTemple sulla schermata Home, con la sua icona: apri la pagina dal telefono con Chrome e tocca Installa.</p></div>
+      <div class="row"><img class="appicon" src="${ICON_PNG}" alt="Icona di BodyTemple"><a class="btn" href="${INSTALL_URL}" target="_blank" rel="noopener">Apri la pagina d'installazione ↗</a></div></section>
     <section class="stack"><div class="sec-head"><h2>Backup</h2><p class="note">Scarica tutti i dati in un file JSON: schede, esercizi, sedute.</p></div>
       <button class="btn" type="button" data-a="export" style="align-self:flex-start" ${S.downloads ? '' : 'disabled'}>Scarica il backup</button></section>`;
 }
