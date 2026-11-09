@@ -321,6 +321,27 @@ button,.chip,.dot{touch-action:manipulation;-webkit-tap-highlight-color:transpar
 .bm-prev{align-self:center}
 .mchip[data-s="p"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
 .mchip[data-s="s"]{background:var(--accent-soft);border-color:var(--accent);color:var(--accent)}
+/* immagini: dettagli di marmo nello stile dell'icona (generati con Figma, file in launcher/img) */
+.ph{position:relative;overflow:hidden;background:#0d0907;display:block}
+.ph img{width:100%;height:100%;object-fit:cover;display:block}
+/* Oggi: torso dietro la citazione */
+header.top.hero{position:relative;padding-top:6px}
+header.top.hero .hero-ph{position:absolute;right:-16px;top:-14px;width:62%;height:calc(100% + 30px);z-index:0;
+  -webkit-mask-image:linear-gradient(to left,#000 50%,transparent 100%);mask-image:linear-gradient(to left,#000 50%,transparent 100%);opacity:.95}
+header.top.hero > :not(.hero-ph){position:relative;z-index:1}
+/* card delle schede con copertina */
+.tcard.img{padding:0;overflow:hidden;gap:0}
+.tcard.img .tph{height:92px;border-bottom:1px solid var(--line)}
+.tcard.img .tph .tc{position:absolute;left:10px;bottom:6px;z-index:2;font-size:44px;background:none;color:#fff;-webkit-text-fill-color:#fff;text-shadow:0 2px 12px rgba(0,0,0,.45)}
+.tcard.img .tbody{padding:9px 12px 12px;display:flex;flex-direction:column;gap:3px}
+/* righe con miniatura */
+.lrow .thumb{width:58px;height:58px;border-radius:10px;flex:none}
+.lrow .thumb .tc{position:absolute;left:6px;bottom:3px;z-index:2;font-family:var(--f-display);font-style:italic;font-weight:900;font-size:24px;line-height:1;color:#fff;text-shadow:0 1px 8px rgba(0,0,0,.5)}
+.lrow .mini{width:48px;height:48px;flex:none;border-radius:10px;background:var(--sunk);overflow:hidden;display:block}
+.lrow .mini svg{width:48px;height:48px;display:block}
+.lrow .mini path{fill:var(--body);stroke:var(--sunk);stroke-width:.2}
+.lrow .mini path.s{fill:color-mix(in srgb,var(--accent) 40%,var(--body))}
+.lrow .mini path.p{fill:url(#bm-heat)}
 </style>
 
 </head>
@@ -868,7 +889,6 @@ function fromTplItem(ti) {
   if (ti.perSide != null) o.perSide = !!ti.perSide;
   return o;
 }
-function phaseItems() { const ph = curPhase(); return ph ? (ph.items || []).map(fromTplItem) : []; }
 
 function nextLoad(l) {
   if (!l) return null;
@@ -1016,18 +1036,13 @@ function viewOggi() {
   const tpls = tplList();
   const tplHtml = tpls.length ? `<div class="tgrid">${tpls.map(t => {
     const ld = lastTpl(t.code);
-    return `<button class="tcard" type="button" data-a="open-tpl" data-id="${esc(t.id)}"><span class="tc">${esc(t.code)}</span><span class="tn">${esc(t.name)}</span>
-      <span class="tm">~${esc(t.minutes)}′ · ${ld ? (daysBetween(ld, today) === 0 ? 'fatta oggi' : `${daysBetween(ld, today)} gg fa`) : 'mai fatta'}</span></button>`;
+    return `<button class="tcard img" type="button" data-a="open-tpl" data-id="${esc(t.id)}">${TPL_IMG[t.code] ? ph(TPL_IMG[t.code], 'tph', `<span class="tc">${esc(t.code)}</span>`) : `<span class="tc" style="padding:12px 12px 0">${esc(t.code)}</span>`}<span class="tbody"><span class="tn">${esc(t.name)}</span>
+      <span class="tm">~${esc(t.minutes)}′ · ${ld ? (daysBetween(ld, today) === 0 ? 'fatta oggi' : `${daysBetween(ld, today)} gg fa`) : 'mai fatta'}</span></span></button>`;
   }).join('')}</div>` : `<div class="empty"><b>Nessuna scheda ancora.</b>Creane una dalla sezione Schede o genera una seduta al volo.</div>`;
 
-  const ph = curPhase();
-  const phHtml = ph ? `<section class="stack">
-      <div class="sec-head"><h2>Fisio · fase ${phaseNum()}</h2><p class="note">${esc(ph.name)} · dal ${S.settings.phaseSince ? fmtDay(S.settings.phaseSince) : '—'} · ${esc(ph.freq || '')}</p></div>
-      <div class="list">${(ph.items || []).map(ti => { const o = fromTplItem(ti); return `<div class="lrow" style="cursor:default"><div class="main"><span class="name">${esc(o.name)}</span><span class="sub">${esc(doseStr(o))}${ti.freq ? ' · ' + esc(ti.freq) : ''}</span></div></div>`; }).join('')}</div>
-      <button class="btn" type="button" data-a="start-fisio">Fai ora il blocco fisio</button></section>` : '';
 
   const [qa, qb, qsrc, qorig] = quoteOf(today);
-  return `<header class="top">
+  return `<header class="top hero">${ph(HERO, 'hero-ph')}
       <h1 class="quote">${esc(qa)} <span>${esc(qb)}</span></h1>
       <p class="motto">${qorig ? `<i>${esc(qorig)}</i>` : ''}<span class="src">${esc(qsrc)}</span></p></header>
     ${actHtml}
@@ -1039,8 +1054,7 @@ function viewOggi() {
       ${alerts.map(([k, a, b]) => `<div class="alert ${k}"><div>${esc(a)} <span>${esc(b)}</span></div></div>`).join('')}
     </section>
     <section class="stack"><div class="sec-head"><h2>Inizia una scheda</h2></div>${tplHtml}
-      <button class="btn primary big" type="button" data-a="go" data-v="genera">Crea una seduta al volo</button></section>
-    ${phHtml}`;
+      <button class="btn primary big" type="button" data-a="go" data-v="genera">Crea una seduta al volo</button></section>`;
 }
 
 /* ---------- vista: genera ---------- */
@@ -1061,7 +1075,6 @@ function viewGenera() {
       <div class="fld"><span>Tempo</span><div class="chips">${minutes.map(m => `<button class="chip" type="button" data-a="gen-min" data-v="${m}" aria-pressed="${g.minutes === m}">${m}′</button>`).join('')}</div></div>
       <div class="fld"><span>Focus</span><div class="chips">${Object.entries(FOCUS).map(([k, f]) => `<button class="chip" type="button" data-a="gen-focus" data-v="${k}" aria-pressed="${g.focus === k}">${f.label}</button>`).join('')}</div></div>
       <div class="fld"><span>Attrezzi a disposizione</span><div class="chips">${Object.entries(EQUIP).map(([k, l]) => `<button class="chip" type="button" data-a="gen-eq" data-v="${k}" aria-pressed="${g.equip.includes(k)}">${l}</button>`).join('')}</div></div>
-      <label class="check"><input type="checkbox" id="gen-fisio" ${g.fisio ? 'checked' : ''}> Aggiungi il blocco fisio della fase ${phaseNum()}</label>
       <label class="fld"><span>Note per Claude (facoltative)</span><textarea id="gen-text" placeholder="Es. ieri ho nuotato 40′, spalla destra un po' rigida, voglio chiudere in fretta">${esc(g.text)}</textarea><span class="dict">${DICT}</span></label>
       <div class="row">${S.sample ? `<button class="btn primary" type="button" data-a="gen-claude" ${g.busy ? 'disabled' : ''}>Genera con Claude</button>` : ''}
         <button class="btn${S.sample ? '' : ' primary'}" type="button" data-a="gen-rules" ${g.busy ? 'disabled' : ''}>Genera con le regole</button></div>
@@ -1094,7 +1107,7 @@ function genRules(p) {
     const e = S.ex[id]; if (!e || !usable(e, p.equip)) continue;
     const it = fromEx(e, {sets: 1, rest: 15, warmup: true}); out.push(it); budget -= estMin(it);
   }
-  const fis = p.fisio ? phaseItems() : [];
+  const fis = [];
   const fisMin = Math.round(fis.reduce((n, it) => n + estMin(it), 0));
   const count = c => out.filter(o => !o.warmup && o.cat === c).reduce((n, o) => n + o.sets, 0);
   for (const cat of FOCUS[p.focus].slots) {
@@ -1125,14 +1138,12 @@ function claudePrompt(p) {
   const hist = finished().slice(0, 10).map(s => `${s.date} · ${s.title}: ` + (s.items || []).filter(i => !i.warmup && ((i.log || []).length || i.userNote))
     .map(i => `${i.name} ${fmtLog(i.log, i.unit)}${i.userNote ? ` (mia nota: ${cut(i.userNote, 200)})` : ''}`).join('; ')
     + (s.note ? `\n  Mie note sulla seduta: ${cut(s.note, 500)}` : '')).join('\n') || 'nessuna seduta registrata';
-  const ph = curPhase();
-  const fis = ph ? (ph.items || []).map(ti => { const o = fromTplItem(ti); return `${o.ex} ${o.name} ${doseStr(o)}`; }).join('; ') : '';
   return `Sei il mio preparatore. Crea UNA seduta di allenamento per oggi (${fmtDay(isoDay())}) che rispetti il mio percorso.
 
 IL MIO PERCORSO
 ${S.settings.profile || ''}
 
-PROTOCOLLO FISIO: fase ${phaseNum()}${ph ? ` (${ph.name})` : ''}. ${p.fisio ? `Includi in coda questi esercizi della fase con le dosi indicate: ${fis}.` : 'Non includere esercizi della fase fisio.'}
+FISIOTERAPIA: non includere esercizi di fisioterapia del piede, li seguo in un'altra app.
 
 RICHIESTA DI OGGI
 - Tempo totale: ${p.minutes} minuti, riscaldamento compreso
@@ -1156,7 +1167,7 @@ REGOLE
 - "unit": "sec" per tenute e isometrie, altrimenti "reps". "perSide": true se la dose è per lato.
 
 Rispondi SOLO con un oggetto JSON:
-{"title": "nome breve", "why": "1-2 frasi sul perché di queste scelte", "items": [{"ex": "id-archivio o null", "name": "nome", "cat": "tirata|spinta|scapole|lower|core|mobilita|caviglia|fisio", "sets": 3, "min": 10, "max": 15, "unit": "reps", "perSide": false, "rest": 90, "pair": null, "warmup": false, "block": "nome della sezione, es. Riscaldamento, Petto + Schiena, Lower + Core", "note": "indicazione breve o stringa vuota"}]}`;
+{"title": "nome breve", "why": "1-2 frasi sul perché di queste scelte", "items": [{"ex": "id-archivio o null", "name": "nome", "cat": "tirata|spinta|scapole|lower|core|mobilita|caviglia", "sets": 3, "min": 10, "max": 15, "unit": "reps", "perSide": false, "rest": 90, "pair": null, "warmup": false, "block": "nome della sezione, es. Riscaldamento, Petto + Schiena, Lower + Core", "note": "indicazione breve o stringa vuota"}]}`;
 }
 function normClaude(data) {
   if (!data || !Array.isArray(data.items) || !data.items.length) throw {code:'shape'};
@@ -1261,8 +1272,6 @@ function viewWorkout() {
   const back = m.live ? 'oggi' : (S.back || 'schede');
   const paletti = [...(m.paletti && m.paletti.length ? m.paletti : String(m.rules || '').split('\n').map(x => x.trim()).filter(Boolean))];
   paletti.push('**Tensione sì, dolore no**: un fastidio a spalla o piede che cresce serie dopo serie è il segnale per fermarti');
-  const hasFisio = items.some(i => i.cat === 'fisio');
-  const ph = curPhase();
   let n = 0;
   const secs = blocksOf(items).map(b => {
     const num = b.title === 'Riscaldamento' ? 0 : ++n;
@@ -1292,10 +1301,6 @@ function viewWorkout() {
       ${conf}
     </header>
     ${secs}
-    ${!hasFisio && ph ? `<section class="stack"><div class="sec-head"><span class="sec-num">${n + 1}</span><h2>Tendine</h2></div>
-      <div class="card"><div>Protocollo della <b>fase ${phaseNum()}</b> · ${esc(ph.name)}: ${(ph.items || []).map(ti => esc(fromTplItem(ti).name)).join(', ')}.</div>
-        ${m.live ? '<button class="btn sm" type="button" data-a="add-fisio" style="align-self:flex-start">Aggiungi in coda alla seduta</button>' : ''}
-        <a href="${JOURNEY}" target="_blank" rel="noopener" style="color:var(--accent);font-weight:650">Apri il Journey Log ↗</a></div></section>` : ''}
     ${m.live ? `<section class="stack"><div class="sec-head"><h2>Note per Claude</h2><p class="note">Come è andata: fastidi, sensazioni, cosa cambiare. Claude le legge quando prepara le prossime sedute.</p></div>
       <div class="card"><textarea class="notebox" id="sess-note" rows="4" placeholder="Es. spalla destra tirava nell'ultimo face pull, rematore facile con 4 kg, piede tranquillo">${esc(S.active.note || '')}</textarea>
         <p class="dict">${DICT}</p></div></section>` : ''}
@@ -1592,7 +1597,7 @@ function viewSchede() {
   return `<header class="top"><div class="eyebrow">Settimana modulare</div><h1>Le tue <span>schede</span></h1>
       <p class="muted">Mai A e C in giorni consecutivi. Evita nuoto intenso e A nello stesso giorno.</p></header>
     ${tpls.length ? `<div class="list">${tpls.map(t => `<button class="lrow" type="button" data-a="open-tpl" data-id="${esc(t.id)}">
-        <span class="icode mono" style="font-size:18px">${esc(t.code)}</span><span class="main"><span class="name">${esc(t.name)}</span>
+        ${TPL_IMG[t.code] ? ph(TPL_IMG[t.code], 'thumb', `<span class="tc">${esc(t.code)}</span>`) : `<span class="icode mono" style="font-size:18px;width:58px">${esc(t.code)}</span>`}<span class="main"><span class="name">${esc(t.name)}</span>
         <span class="sub">${(t.items || []).filter(x => !x.warmup).length} esercizi · ~${esc(t.minutes)}′${lastTpl(t.code) ? ' · ultima ' + fmtDay(lastTpl(t.code)) : ''}</span></span><span class="chev">›</span></button>`).join('')}</div>`
       : '<div class="empty"><b>Nessuna scheda.</b>Creane una nuova qui sotto.</div>'}
     <button class="btn" type="button" data-a="tpl-new">+ Nuova scheda</button>`;
@@ -1630,18 +1635,18 @@ function exMatches(e) {
 }
 function exRows(list, act = 'ex-open') {
   if (!list.length) return '<div class="titem muted small">Nessun esercizio con questi filtri.</div>';
-  return list.map(e => `<button class="lrow" type="button" data-a="${act}" data-id="${esc(e.id)}"><span class="main"><span class="name">${esc(e.name)}
+  return list.map(e => `<button class="lrow" type="button" data-a="${act}" data-id="${esc(e.id)}">${miniFig(e)}<span class="main"><span class="name">${esc(e.name)}
     ${e.status !== 'attivo' ? `<span class="tag${e.status === 'bloccato' ? ' bad' : e.status === 'provare' ? ' acc' : ''}">${esc(STATUS[e.status] || e.status)}</span>` : ''}
     ${e.foot === 'cautela' ? '<span class="tag warn">piede</span>' : e.foot === 'vietato' ? '<span class="tag bad">piede ⛔</span>' : ''}</span>
     <span class="sub">${esc(CATS[e.cat] || e.cat)} · ${esc(doseStr(e))}</span></span><span class="chev">›</span></button>`).join('');
 }
-function sortedEx() { return Object.values(S.ex).sort((a, b) => Object.keys(CATS).indexOf(a.cat) - Object.keys(CATS).indexOf(b.cat) || a.name.localeCompare(b.name)); }
+function sortedEx() { return Object.values(S.ex).filter(e => e.cat !== 'fisio').sort((a, b) => Object.keys(CATS).indexOf(a.cat) - Object.keys(CATS).indexOf(b.cat) || a.name.localeCompare(b.name)); }
 function viewEsercizi() {
   const f = S.exFilter;
   const list = sortedEx().filter(exMatches);
   return `<header class="top"><div class="eyebrow">${Object.keys(S.ex).length} esercizi</div><h1>Archivio <span>esercizi</span></h1></header>
     <input class="search" id="ex-q" type="search" placeholder="Cerca un esercizio" value="${esc(f.q)}" aria-label="Cerca un esercizio">
-    <div class="chips">${['tutte', ...Object.keys(CATS)].map(c => `<button class="chip" type="button" data-a="exf-cat" data-v="${c}" aria-pressed="${f.cat === c}">${c === 'tutte' ? 'Tutte' : CATS[c]}</button>`).join('')}</div>
+    <div class="chips">${['tutte', ...Object.keys(CATS).filter(c => c !== 'fisio')].map(c => `<button class="chip" type="button" data-a="exf-cat" data-v="${c}" aria-pressed="${f.cat === c}">${c === 'tutte' ? 'Tutte' : CATS[c]}</button>`).join('')}</div>
     <div class="chips">${[['usabili','Usabili'],['tutti','Tutti'],['bloccati','Bloccati e archiviati']].map(([k, l]) => `<button class="chip" type="button" data-a="exf-st" data-v="${k}" aria-pressed="${f.status === k}">${l}</button>`).join('')}</div>
     <div class="list" id="ex-list">${exRows(list)}</div>
     <button class="btn" type="button" data-a="ex-new">+ Nuovo esercizio</button>`;
@@ -1822,6 +1827,30 @@ function musDraftOut() {
   return {p: ks.filter(k => st[k] === 'p'), s: ks.filter(k => st[k] === 's'), side: S.musDraft.side};
 }
 
+const IMG = 'img/';
+const TPL_IMG = {"A": "scheda-a", "B": "scheda-b", "C": "scheda-c", "D": "scheda-d", "MB": "scheda-mb", "ML": "scheda-ml"};
+const POS = {"oggi": "center 40%", "scheda-a": "center 35%", "scheda-b": "center 45%", "scheda-c": "18% 55%", "scheda-d": "center 40%", "scheda-mb": "center 35%", "scheda-ml": "center 65%"};
+const HERO = 'oggi';
+const ph = (id, cls = '', inner = '') => id ? `<span class="ph ${cls}"><img src="${IMG}${id}.jpg" alt=""${cls === 'hero-ph' ? '' : ' loading="lazy"'} decoding="async"${POS[id] ? ` style="object-position:${POS[id]}"` : ''}>${inner}</span>` : '';
+/* figura piccola per le liste: ingrandita sulla zona dei muscoli principali */
+function bodyBoxes() {
+  if (bodyBoxes.c) return bodyBoxes.c;
+  const NS = 'http://www.w3.org/2000/svg', svg = document.createElementNS(NS, 'svg'), c = {};
+  svg.setAttribute('style', 'position:absolute;width:0;height:0;visibility:hidden'); document.body.appendChild(svg);
+  for (const id in BODY) { const p = document.createElementNS(NS, 'path'); p.setAttribute('d', BODY[id].slice(1)); svg.appendChild(p); const b = p.getBBox(); c[id] = [b.x, b.y, b.x + b.width, b.y + b.height]; }
+  svg.remove(); return bodyBoxes.c = c;
+}
+function miniFig(e) {
+  const m = musclesOf(e); if (!m) return '<span class="mini"></span>';
+  const z = zonesOf(m), bx = bodyBoxes(); let f = 0, b = 0;
+  for (const id in z) if (z[id] === 'p') BODY[id][0] === 'B' ? b++ : f++;
+  const back = b > f; let x0 = 1e9, y0 = 1e9, x1 = -1e9, y1 = -1e9;
+  for (const id in z) if (z[id] === 'p' && (BODY[id][0] === 'B') === back) { const q = bx[id]; x0 = Math.min(x0, q[0]); y0 = Math.min(y0, q[1]); x1 = Math.max(x1, q[2]); y1 = Math.max(y1, q[3]); }
+  const sz = Math.min(44, Math.max(21, Math.max(x1 - x0, y1 - y0) * 1.45)), cx = (x0 + x1) / 2, cy = (y0 + y1) / 2;
+  let d = '';
+  for (const id in BODY) if ((BODY[id][0] === 'B') === back) d += `<path d="${BODY[id].slice(1)}"${z[id] ? ` class="${z[id]}"` : ''}/>`;
+  return `<span class="mini" aria-hidden="true"><svg viewBox="${(cx - sz / 2).toFixed(2)} ${(cy - sz / 2).toFixed(2)} ${sz.toFixed(2)} ${sz.toFixed(2)}">${d}</svg></span>`;
+}
 function viewEsercizio() {
   const isNew = S.param === '__new';
   const e = isNew ? {id:'', name:'', cat:'tirata', status:'provare', foot:'ok', kind:'ipertrofia', unit:'reps', perSide:false, sets:3, min:8, max:12, rest:60, load:'corpo', equip:[], cue:'', notes:[], progression:''} : S.ex[S.param];
@@ -1925,14 +1954,7 @@ function viewSeduta() {
 
 /* ---------- vista: profilo ---------- */
 function viewProfilo() {
-  const ph = curPhase(), n = phaseNum();
   return `<header class="top"><div class="eyebrow">Profilo</div><h1>Il tuo <span>percorso</span></h1></header>
-    <section class="stack"><div class="sec-head"><h2>Protocollo fisio</h2><p class="note">La progressione segue i criteri clinici, non il calendario. Conferma sempre con il fisio.</p></div>
-      <div class="chips">${[1,2,3,4].map(k => `<button class="chip" type="button" data-a="set-phase" data-v="${k}" aria-pressed="${n === k}">Fase ${k}${S.phases[k] ? ' · ' + esc(S.phases[k].name) : ''}</button>`).join('')}</div>
-      <label class="fld"><span>In questa fase dal</span><input id="p-since" type="date" value="${esc(S.settings.phaseSince || '')}"></label>
-      ${ph ? `<div class="card"><span class="eyebrow">Per passare alla fase ${n + 1 <= 4 ? n + 1 : 'successiva'}</span><ul style="margin:0;padding-left:18px;display:flex;flex-direction:column;gap:4px">${(ph.criteria || []).map(c => `<li>${esc(c)}</li>`).join('')}</ul>
-        ${(ph.rules || []).length ? `<span class="eyebrow">Regole della fase</span><ul style="margin:0;padding-left:18px;display:flex;flex-direction:column;gap:4px">${ph.rules.map(c => `<li>${esc(c)}</li>`).join('')}</ul>` : ''}</div>` : ''}
-    </section>
     <section class="stack"><div class="sec-head"><h2>Contesto per Claude</h2><p class="note">Vincoli, obiettivi e regole che Claude legge ogni volta che genera una seduta.</p></div>
       <label class="fld"><span>Il mio percorso</span><textarea id="p-profile" style="min-height:220px">${esc(S.settings.profile || '')}</textarea></label>
       <button class="btn" type="button" data-a="save-profile" style="align-self:flex-start">Salva il contesto</button></section>
@@ -1952,7 +1974,7 @@ function drawPicker() {
   const p = S.picker, sh = $('#sheet');
   sh.innerHTML = `<div class="row"><h3>Scegli un esercizio</h3><span class="spacer"></span><button class="icon-btn" type="button" data-a="pick-close" aria-label="Chiudi">×</button></div>
     <input class="search" id="pick-q" type="search" placeholder="Cerca" aria-label="Cerca un esercizio">
-    <div class="chips">${['tutte', ...Object.keys(CATS)].map(c => `<button class="chip" type="button" data-a="pick-cat" data-v="${c}" aria-pressed="${p.cat === c}">${c === 'tutte' ? 'Tutte' : CATS[c]}</button>`).join('')}</div>
+    <div class="chips">${['tutte', ...Object.keys(CATS).filter(c => c !== 'fisio')].map(c => `<button class="chip" type="button" data-a="pick-cat" data-v="${c}" aria-pressed="${p.cat === c}">${c === 'tutte' ? 'Tutte' : CATS[c]}</button>`).join('')}</div>
     <div class="list" id="pick-list"></div>`;
   $('#overlay').hidden = false;
   drawPickerList();
@@ -2007,8 +2029,6 @@ document.addEventListener('click', async ev => {
     case 'sh-nav': changeEx(Number(b.dataset.d)); break;
     case 'reset': S.confirm = 'reset'; draw(); window.scrollTo(0, 0); break;
     case 'reset-yes': act.items.forEach(it => { it.log = []; }); S.draft = {}; S.confirm = null; S.timer = null; touch(); draw(); toast('Serie azzerate'); break;
-    case 'add-fisio': act.items.push(...phaseItems().map(it => Object.assign(it, {block: 'Tendine'}))); touch(); draw(); break;
-    case 'start-fisio': { const ph = curPhase(); if (ph) startSession({title: `Fisio · fase ${phaseNum()}`, code: 'F', source: 'fisio', head: ['Fisio', `fase ${phaseNum()}`], paletti: (curPhase().rules || [])}, phaseItems()); break; }
     case 'repeat': { const s = S.sessions.find(x => x.id === id); if (s) startSession({title: s.title, code: s.code, source: s.source, tplId: s.tplId, head: s.head, blocks: s.blocks, paletti: s.paletti, minutes: s.minutes}, (s.items || []).map(it => Object.assign(clone(it), {log: []}))); break; }
 
     case 'gen-min': S.gen.minutes = Number(v); saveGenPrefs(); draw(); break;
@@ -2069,7 +2089,6 @@ document.addEventListener('click', async ev => {
     case 'sess-del': S.confirm = 'sess-del'; draw(); break;
     case 'sess-del-yes': try { await S.db.doc('sessions/' + id).delete(); toast('Seduta eliminata'); go('storico'); } catch (e) { toast('Non sono riuscito a eliminarla'); } break;
 
-    case 'set-phase': saveSettings({phase: Number(v), phaseSince: Number(v) !== phaseNum() ? isoDay() : (S.settings.phaseSince || isoDay())}, `Fase ${v} impostata`); break;
     case 'save-profile': saveSettings({profile: $('#p-profile').value}, 'Contesto salvato'); break;
     case 'save-bands': { const list = $('#p-bands').value.split(',').map(x => x.trim()).filter(Boolean); if (list.length) saveSettings({bands: list}, 'Bande salvate'); break; }
     case 'export': exportAll(); break;
@@ -2084,8 +2103,6 @@ document.addEventListener('input', ev => {
 });
 document.addEventListener('change', ev => {
   const t = ev.target;
-  if (t.id === 'gen-fisio') { S.gen.fisio = t.checked; saveGenPrefs(); }
-  if (t.id === 'p-since') saveSettings({phaseSince: t.value}, 'Data salvata');
   if (S.tplDraft && t.dataset.tf) { const k = t.dataset.tf; S.tplDraft[k] = k === 'minutes' ? Number(t.value) || 0 : k === 'paletti' ? t.value.split('\n').map(x => x.trim()).filter(Boolean) : t.value; }
   if (S.tplDraft && t.dataset.ti != null) {
     const it = S.tplDraft.items[Number(t.dataset.ti)], k = t.dataset.k;
