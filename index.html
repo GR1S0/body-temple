@@ -17,7 +17,7 @@
 /* Layout: una colonna da telefono, barra schede in basso, seduta a tutto schermo con timer fisso. Stessa grammatica della scheda Full Body */
 :root{
   /* Calore da sforzo, non neon: rame bruciato che scende nel rosso mattone, su neutri caldi ma non crema */
-  --bg:#F4F2F1; --surface:#FFFFFF; --sunk:#EBE8E6; --fg:#171313; --muted:#68605C; --line:#E0DAD6;
+  --bg:#F4F2F1; --surface:#FFFFFF; --sunk:#EBE8E6; --fg:#171313; --muted:#68605C; --line:#E0DAD6; --body:#E2DCD8;
   --accent:#F0561A; --accent-2:#C21E2B; --accent-ink:#FFFFFF; --accent-soft:#FDE2D6;
   --heat:linear-gradient(135deg,var(--accent) 0%,var(--accent) 40%,var(--accent-2) 135%);
   --warn:#A36A00; --warn-soft:#FAEFD4; --ok:#2E7D46; --ok-soft:#E1F1E5; --bad:#C2181F; --bad-soft:#FADDDB;
@@ -29,12 +29,12 @@
   --f-mono:"PP Right Grotesk Mono",ui-monospace,"SF Mono",Menlo,monospace;
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
-  --bg:#0E0C0B; --surface:#191615; --sunk:#131110; --fg:#F4EFEC; --muted:#A39A95; --line:#2D2826;
+  --bg:#0E0C0B; --surface:#191615; --sunk:#131110; --fg:#F4EFEC; --muted:#A39A95; --line:#2D2826; --body:#302A28;
   --accent:#FF6B2C; --accent-2:#EC3338; --accent-ink:#FFFFFF; --accent-soft:#3E1A10;
   --warn:#F2B33D; --warn-soft:#33260C; --ok:#6FCF8A; --ok-soft:#13291A; --bad:#FF6B5B; --bad-soft:#3A1512;
   --shadow:0 10px 40px rgba(0,0,0,.55); --glow:0 0 22px rgba(255,107,44,.42),0 0 2px rgba(255,140,80,.6); --neon:drop-shadow(0 0 14px rgba(255,98,40,.45)); --scrim:rgba(0,0,0,.62); --glass:rgba(25,22,21,.72); --glass-edge:rgba(255,255,255,.08); color-scheme:dark}}
 :root[data-theme="dark"]{
-  --bg:#0E0C0B; --surface:#191615; --sunk:#131110; --fg:#F4EFEC; --muted:#A39A95; --line:#2D2826;
+  --bg:#0E0C0B; --surface:#191615; --sunk:#131110; --fg:#F4EFEC; --muted:#A39A95; --line:#2D2826; --body:#302A28;
   --accent:#FF6B2C; --accent-2:#EC3338; --accent-ink:#FFFFFF; --accent-soft:#3E1A10;
   --warn:#F2B33D; --warn-soft:#33260C; --ok:#6FCF8A; --ok-soft:#13291A; --bad:#FF6B5B; --bad-soft:#3A1512;
   --shadow:0 10px 40px rgba(0,0,0,.55); --glow:0 0 22px rgba(255,107,44,.42),0 0 2px rgba(255,140,80,.6); --neon:drop-shadow(0 0 14px rgba(255,98,40,.45)); --scrim:rgba(0,0,0,.62); --glass:rgba(25,22,21,.72); --glass-edge:rgba(255,255,255,.08); color-scheme:dark}
@@ -299,11 +299,34 @@ button,.chip,.dot{touch-action:manipulation;-webkit-tap-highlight-color:transpar
 @media (max-width:420px){.tiles{grid-template-columns:repeat(2,minmax(0,1fr))}}
 .delta{font-family:var(--f-mono);font-size:12.5px;font-weight:700;white-space:nowrap}
 .delta.up{color:var(--ok)} .delta.down{color:var(--warn)} .delta.eq,.delta.new{color:var(--muted)}
+.bmap{display:flex;gap:14px;align-items:center}
+.bm-figs{display:flex;gap:2px;flex:none}
+.bm-figs figure{margin:0;display:flex;flex-direction:column;align-items:center;gap:3px}
+.bm-figs figcaption{font-family:var(--f-mono);font-size:9.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.bm-fig{height:168px;width:auto;display:block}
+.bm-figs.sm .bm-fig{height:96px}
+.bmap.sm .bm-leg{font-size:13px;gap:5px}
+.bm-figs.sm figcaption{display:none}
+.bm-fig path{fill:var(--body);stroke:var(--surface);stroke-width:.18;stroke-linejoin:round;transition:fill .2s}
+.bm-fig path.s{fill:color-mix(in srgb,var(--accent) 40%,var(--body))}
+.bm-fig path.p{fill:url(#bm-heat)}
+.bm-leg{margin:0;display:flex;flex-direction:column;gap:8px;min-width:0;font-size:13.5px;line-height:1.35}
+.bm-leg dt{font-family:var(--f-mono);font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);display:flex;align-items:center;gap:6px}
+.bm-leg dd{margin:2px 0 0}
+.bm-dot{width:9px;height:9px;border-radius:3px;display:inline-block;flex:none}
+.bm-dot.p{background:var(--heat)} .bm-dot.s{background:color-mix(in srgb,var(--accent) 40%,var(--body))}
+.bmap.card{flex-direction:row}
+@media (max-width:340px){.bmap{flex-direction:column;align-items:flex-start}}
+.mus-edit{display:flex;flex-direction:column;gap:10px}
+.bm-prev{align-self:center}
+.mchip[data-s="p"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.mchip[data-s="s"]{background:var(--accent-soft);border-color:var(--accent);color:var(--accent)}
 </style>
 
 </head>
 <body>
 <div class="wrap" id="app" aria-live="polite"></div>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs><linearGradient id="bm-heat" x1="0" y1="0" x2="1" y2="1"><stop offset="0" style="stop-color:var(--accent)"/><stop offset="1" style="stop-color:var(--accent-2)"/></linearGradient></defs></svg>
 
 <div class="timer" id="timer" hidden></div>
 
@@ -1335,6 +1358,7 @@ function drawSheet() {
   $('#sheet').innerHTML = `<div class="sh-drag"><span class="grab" aria-hidden="true"></span><div class="sh-top"><div><h3 id="shTitle">${esc(itemCode(m.items, i))} · ${esc(it.name)}</h3>
       <div class="sh-dose">${esc(doseStr(it))}${it.note ? ' · ' + esc(it.note) : ''}${it.rest && !(it.pair && m.items[i + 1] && m.items[i + 1].pair === it.pair) ? ` · poi recupero ${it.rest}″` : ''}</div></div>
       <button class="close" id="sh-close" type="button" data-a="sh-close" aria-label="Chiudi">×</button></div></div>
+    ${muscleBlock(S.ex[it.ex] || {id: it.ex}, 'sm')}
     ${vals}
     ${notes.length ? `<dl class="notes">${notes.map(([k, v]) => `<div class="note${/errore/i.test(k) ? ' err' : ''}"><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join('')}</dl>` : ''}
     ${e.progression ? `<p class="small"><b>Come progredire:</b> ${esc(e.progression)}</p>` : ''}
@@ -1635,6 +1659,169 @@ function spark(hist) {
     <polyline class="ln" points="${line}"/><circle class="dt" cx="${last[0].toFixed(1)}" cy="${last[1].toFixed(1)}" r="3.5"/>
     <text x="${P}" y="10">${max} max</text><text x="${W - P}" y="10" text-anchor="end">ultima ${pts[pts.length - 1]}</text></svg>`;
 }
+/* ---------- mappa dei muscoli ----------
+   Disegno del corpo: "Body Muscles", Copyright 2024 Ivan Vulović, licenza Apache 2.0
+   (https://github.com/vulovix/body-muscles). Tracciati riportati con coordinate arrotondate.
+   Lato "right"/"left" = lato anatomico: davanti il destro sta a sinistra di chi guarda, dietro a destra. */
+const BODY = {"head":"Fm 11.67,6.36 -0.05,-2.59 4.21,-2.47 4.43,2.95 -0.04,1.94 0.24,-3.34 -2.03,-2.31 -2.85,-0.52 -2.2,0.53 -1.94,2.63 z","face":"Fm 19.75,6.7 0.02,-2.21 -3.97,-2.76 -3.74,2.24 -0.01,2.64 -0.61,0.04 0.27,1.82 0.98,0.34 0.44,2.18 1.82,2.07 2.04,-0.06 1.79,-1.94 0.36,-2.24 0.98,-0.34 0.25,-1.78 z","neck-right":"Fm 13.3,11.91 1.65,2.35 0.74,2.62 -1.73,-1.38 -0.87,-2.97 z","neck-left":"Fm 18.39,11.91 -1.65,2.35 -0.75,2.62 1.73,-1.38 0.87,-2.97 z","shoulder-front-left":"Fm 19.05,13.25 3.56,1.98 0.73,-0.35 z m -0.11,0.43 -0.37,1.73 2.18,0.54 1.4,-0.49 z","shoulder-side-left":"Fm 22.92,15.66 0.76,-0.41 2.41,1.67 1.17,1.51 0.63,1.56 -0.05,3.7 -1.33,-1.72 0.04,-2.59 -0.49,-0.5 c 0,0 -3.1,-3.19 -3.14,-3.21 z m -0.24,0.11 c 0,0.05 3.33,3.55 3.33,3.55 l 0.1,3.1 -1.15,-1.98 -2.23,-0.95 -1.57,-2.88 z","shoulder-front-right":"Fm 12.62,13.25 -3.56,1.98 -0.73,-0.35 z m 0.11,0.43 0.37,1.73 -2.18,0.54 -1.4,-0.49 z","shoulder-side-right":"Fm 8.75,15.66 -0.76,-0.41 -2.41,1.67 -1.17,1.51 -0.63,1.56 0.05,3.7 1.33,-1.72 -0.04,-2.59 0.49,-0.5 c 0,0 3.1,-3.19 3.14,-3.21 z m 0.24,0.11 c 0,0.05 -3.33,3.55 -3.33,3.55 l -0.1,3.1 1.15,-1.98 2.23,-0.95 1.57,-2.88 z","biceps-left":"Fm 27.62,30.81 -0.34,1.7 -1.82,-2.54 -0.66,-1.27 z m -2.85,-2.61 c -0.03,-0.01 -0.05,-0.03 -0.08,-0.03 l -1.48,-4.96 1,-2.08 1.66,1.75 2.23,6.68 0.04,0.94 c -1.07,-0.84 -2.19,-1.61 -3.36,-2.29 z m 1.69,-5.76 1.65,6.43 -0.36,-4.92 z","forearm-left":"Fm 26.96,32.97 1.3,10.29 -1.11,0.01 -1.89,-8 0.19,-4.54 z m 1.22,-1.95 -0.59,2.59 1.12,9.16 0.56,-0.22 0.23,-6.77 z","biceps-right":"Fm 4.07,30.81 0.34,1.7 1.82,-2.54 0.66,-1.27 z m 2.85,-2.61 c 0.03,-0.01 0.05,-0.03 0.08,-0.03 l 1.48,-4.96 -1,-2.08 -1.66,1.75 -2.23,6.68 -0.04,0.94 c 1.07,-0.84 2.19,-1.61 3.36,-2.29 z m -1.69,-5.76 -1.65,6.43 0.36,-4.92 z","forearm-right":"Fm 4.58,32.97 -1.3,10.29 1.11,0.01 1.89,-8 -0.19,-4.54 z m -1.22,-1.95 0.59,2.59 -1.12,9.16 -0.56,-0.22 -0.23,-6.77 z","chest-upper-left":"Fm 20.34,17.09 1.73,3.09 1.89,0.94 -0.5,0.3 -6.8, -2.1 z","chest-lower-left":"Fm 16.66,19.72 6.8,2.1 -0.65,0.5 -0.91,2.64 -2.1,0.87 -3.35,-1.66 0.2,-3.8 z","chest-upper-right":"Fm 11.35,17.09 -1.73,3.09 -1.89,0.94 0.5,0.3 6.8,-2.1 z","chest-lower-right":"Fm 15.03,19.72 -6.8,2.1 0.65,0.5 0.91,2.64 2.1,0.87 3.35,-1.66 -0.2,-3.8 z","abs-upper-left":"Fm 19.64,34.71 1.81,-1.36 0.16,1.83 1.29,2.37 -1.98,2.74 -1.03,0.17 -0.37,-3.89 z","serratus-anterior-left":"FM 19.29,26.15 l -3.11 -1.41 0.09 2.28 2.8 1.44 z M 21.22,27.82 l -1.29 0.72 0.15 -1.71 z M 20.17,26.18 l 2.48 -1.03 -0.93 2.52 z M 21.7,27.92 l -1.69 1.03 -0.29 2.07 1.65 -1.08 z","obliques-left":"FM 18.79,29.02 l -0.06 1.62 -2.3 -0.5 -0.12 -2.22 z M 18.64,31.43 l 0.03 2 -2.21 0.59 -0.03 -3.12 z M 21.29,30.44 l -1.48 1.03 -0.21 2.11 1.65 -1.32 z","abs-upper-right":"Fm 12.05,34.71 -1.81,-1.36 -0.16,1.83 -1.29,2.37 1.98,2.74 1.03,0.17 0.37,-3.89 z","abs-lower-right":"Fm 15.64,44.92 -0.61,-5.91 -0.01,-3.85 -2.18,-1.08 -0.25,7.03 z","abs-lower-left":"Fm 16.05,44.92 0.61,-5.91 0.02,-3.85 2.18,-1.08 0.25,7.03 z","serratus-anterior-right":"Fm 12.4,26.15 3.11,-1.41 -0.09,2.28 -2.8,1.44 z m -1.94,1.67 1.29,0.72 -0.15,-1.71 z m 1.05,-1.64 -2.48,-1.03 0.93,2.52 z m -1.53,1.74 1.69,1.03 0.29,2.07 -1.65,-1.08 z","obliques-right":"FM 12.9,29.02 l 0.06 1.62 2.3 -0.5 0.12 -2.22 z M 13.05,31.43 l -0.03 2 2.21 0.59 0.03 -3.12 z M 10.4,30.45 l 1.48 1.03 0.21 2.11 -1.65 -1.32 z","hip-flexor-right":"Fm 14.4,45.04 0.02,-0.03 -0.15,-0.38 -3.1,-3.4 -0.23,-0.08 2.06,5.32 z m -1.17,2.02 1.28,3.3 0.43,-4.05 -0.25,-0.64 z","hip-flexor-left":"Fm 17.28,45.04 -0.02,-0.03 0.15,-0.38 3.1,-3.4 0.23,-0.08 -2.06,5.32 z m 1.17,2.02 -1.28,3.3 -0.43,-4.05 0.25,-0.64 z","quads-left":"Fm 23.42,50.4 -0.16,4.75 -2.4,6.61 0.74,1.9 2.36,-8.34 z m -0.58,-11.61 -0.15,4.01 1.32,7.93 0.62,-6.4 z m -0.39,5.12 -2.75,6.07 -0.62,4.87 1.16,6.86 2.52,-6.98 0.16,-7.19 z","adductors-left":"Fm 22.06,39.37 v 4.21 l -2.95,5.83 -1.86,5.78 0.19,-4.01 z m -3.25,13.43 -0.06,0.15 -1.21,2.9 0.78,7.19 1.24,-0.66 -1.07,-6.69 z","foot-left":"Fm 17.26,87.87 0.12,3.45 0.29,1.21 h 0.87 l 0.25,-0.83 0.29,-0.04 -0.06,0.83 1.1,-0.33 0.29,-0.17 1.24,-0.27 0.04,-0.98 -1.2,-2.04 -0.83,-1.04 -2.03,-0.83 z","tibialis-anterior-left":"Fm 18.25,70.44 0.29,0.91 0.62,3.87 0.08,5.16 -0.87,5.03 0.04,-6.45 -0.91,-2.58 -0.13,-2.83 z m 1.99,2.33 -0.21,7.74 -1.66,6.24 1.8,-0.85 3.01,-10.84 -1.04,-6.82 z","knee-left":"Fm 21.4,64.78 0.12,1.12 -0.87,1.08 -0.29,1.71 -0.58,0.25 -0.5,-2.58 -0.33,-0.91 0.29,-0.58 z m -3.86,0.08 0.62,1.75 1.33,2.58 -0.33,2.37 -0.95,-2.66 -0.79,-1.5 z m 4.98,-2.37 -0.95,5.12 0.62,-0.33 0.5,1.66 z","quads-right":"Fm 8.27,50.4 0.16,4.75 2.4,6.61 -0.74,1.9 -2.36,-8.34 z m 0.58,-11.61 0.16,4.01 -1.32,7.93 -0.62,-6.4 z m 0.39,5.12 2.75,6.07 0.62,4.87 -1.16,6.86 -2.52,-6.98 -0.16,-7.19 z","adductors-right":"Fm 9.63,39.37 v 4.21 l 2.95,5.83 1.86,5.78 -0.19,-4.01 z m 3.25,13.43 0.06,0.15 1.21,2.9 -0.78,7.19 -1.24,-0.66 1.07,-6.69 z","foot-right":"Fm 14.43,87.87 -0.12,3.45 -0.29,1.21 h -0.87 l -0.25,-0.83 -0.29,-0.04 0.06,0.83 -1.1,-0.33 -0.29,-0.17 -1.24,-0.27 -0.04,-0.98 1.2,-2.04 0.83,-1.04 2.03,-0.83 z","tibialis-anterior-right":"Fm 13.44,70.44 -0.29,0.91 -0.62,3.87 -0.08,5.16 0.87,5.03 -0.04,-6.45 0.91,-2.58 0.12,-2.83 z m -1.99,2.33 0.21,7.74 1.66,6.24 -1.8,-0.85 -3.01,-10.84 1.04,-6.82 z","knee-right":"Fm 10.28,64.78 -0.12,1.12 0.87,1.08 0.29,1.71 0.58,0.25 0.5,-2.58 0.33,-0.91 -0.29,-0.58 z m 3.86,0.08 -0.62,1.75 -1.33,2.58 0.33,2.37 0.95,-2.66 0.79,-1.5 z m -4.98,-2.37 0.95,5.12 -0.62,-0.33 -0.5,1.66 z","elbow-right":"Fm 3.21,27.37 0.01,3.09 -0.58,1.91 -0.55,-2.41 z","hand-right":"Fm 4.39,43.56 -1.52,0.05 -0.77,-0.67 -1.21,2.16 -0.86,3.33 0.49,0.22 0.6,-2.2 0.5,0.25 -0.36,2.49 0.62,0.24 0.41,-2.49 0.56,0.18 -0.23,2.77 0.77,0.32 0.26,-2.87 0.46,-0.02 0.17,2.65 0.66,0.26 0.07,-4.57 0.34,-0.19 1.35,1.68 0.33,-0.34 -0.73,-2.06 z","elbow-left":"Fm 28.33,27.37 -0.01,3.09 0.58,1.91 0.55,-2.41 z","hand-left":"Fm 27.14,43.56 1.52,0.05 0.77,-0.67 1.21,2.16 0.86,3.33 -0.49,0.22 -0.6,-2.2 -0.5,0.25 0.36,2.49 -0.62,0.24 -0.41,-2.49 -0.56,0.18 0.23,2.77 -0.77,0.32 -0.26,-2.87 -0.46,-0.02 -0.17,2.65 -0.66,0.26 -0.07,-4.57 -0.34,-0.19 -1.35,1.68 -0.33,-0.34 0.73,-2.06 z","head-back":"Bm 48.16,6.36 0.44,-0.15 0.16,0.16 1.48,4.05 2.32,1.45 2.4,-1.52 0.98,-3.69 0.53,-0.56 0.23,0.1 0.24,-3.34 -2.03,-2.31 -2.85,-0.52 -2.2,0.53 -1.94,2.63 z","nape":"Bm 52.37,12.11 -2.36,-1.55 -1.47,-3.95 -0.61,0.04 0.27,1.82 0.98,0.34 0.76,2.22 0.33,1.07 0.09,2.15 1.16,0.01 0.11,-0.71 0.55,-0.06 z m 1.02,1.48 0.24,0.65 1.38,0 0.01,-2.39 0.26,-0.79 0.57,-2.17 0.76,-0.41 0.25,-1.78 -0.63,0.02 -1.08,3.9 -2.4,1.47 0.28,1.49 z","traps-upper-left":"BM 49.62,14.63 L 49.69,12.01 L 48.97,13.16 L 44.59,14.65 L 45.95,16.93 L 51.22,16.93 L 51.18,14.55 Z","traps-mid-left":"BM 46.03,17.07 L 48.92,21.93 L 51.3,21.93 L 51.22,17.07 Z","traps-lower-left":"BM 49.01,22.07 L 49.57,23.02 L 51.4,28.1 L 51.3,22.07 Z","traps-upper-right":"BM 55.44,14.73 L 55.38,12.1 L 56.09,13.26 L 60.47,14.75 L 59.18,16.93 L 53.84,16.93 L 53.88,14.65 Z","traps-mid-right":"BM 59.09,17.07 L 56.2,21.93 L 53.76,21.93 L 53.84,17.07 Z","traps-lower-right":"BM 56.11,22.07 L 55.49,23.12 L 53.66,28.2 L 53.76,22.07 Z","lats-upper-left":"BM 44.14,15.29 L 39.89,20.29 L 39.43,22.75 L 41.26,21.51 L 44.02,20.36 L 45.66,23.4 L 49.1,23.4 Z","deltoid-rear-left":"BM 42.2,16.59 L 40.63,18.15 L 39.74,20.16 L 43.99,15.15 Z","lats-mid-left":"BM 45.77,23.6 L 45.87,23.79 L 47.01,29.29 L 47.02,30.4 L 51.08,30.4 L 51.05,28.31 L 49.19,23.6 Z","lats-lower-left":"BM 47.03,30.6 L 47.09,35.15 L 51.16,36.26 L 51.08,30.6 Z","deltoid-rear-right":"BM 62.86,16.69 L 64.44,18.25 L 65.33,20.25 L 61.07,15.25 Z","lats-upper-right":"BM 60.92,15.38 L 65.18,20.39 L 65.29,22.85 L 63.8,21.61 L 61.04,20.45 L 59.45,23.4 L 56.02,23.4 Z","lats-mid-right":"BM 59.35,23.6 L 59.19,23.89 L 58.05,29.39 L 58.04,30.4 L 53.99,30.4 L 54.01,28.41 L 55.92,23.6 Z","lats-lower-right":"BM 58.04,30.6 L 57.98,35.24 L 53.91,36.35 L 53.98,30.6 Z","triceps-long-left":"BM 43.59,21.04 L 44.92,23.97 L 43.62,25.65 L 43.19,27.07 L 39.21,29.8 Z","triceps-lateral-left":"BM 43.46,20.97 L 39.08,29.73 L 38.87,25.46 L 39.41,23.67 L 41.24,21.93 Z","hand-back-left":"BM 40.72,42.42 l -1.52,0.09 -0.78,-0.65 -1.16,2.19 -0.78,3.35 0.5,0.21 0.55,-2.22 0.51,0.24 -0.3,2.5 0.63,0.23 0.36,-2.5 0.56,0.17 -0.16,2.77 0.78,0.3 0.19,-2.87 0.46,-0.03 0.23,2.65 0.67,0.25 -0.04,-4.57 0.34,-0.2 1.39,1.65 0.32,-0.35 -0.77,-2.04 z","forearm-flexors-left":"BM 40.77,29.01 L 42.87,27.64 L 42.19,29.64 L 42.6,34.38 L 40.8,42.08 L 39.81,42.25 Z","forearm-extensors-left":"BM 39.66,42.24 L 38.3,41.5 L 38,34.49 L 38.63,31.43 L 39.24,30.21 L 40.62,28.99 Z","triceps-long-right":"BM 61.38,21.21 L 60.06,24.14 L 61.33,26.2 L 61.66,27.25 L 65.78,29.97 Z","triceps-lateral-right":"BM 61.51,21.15 L 65.91,29.9 L 66.11,25.62 L 65.57,23.84 L 63.73,22.1 Z","hand-back-right":"BM 64.3,42.59 l 1.52,0.08 0.78,-0.65 1.17,2.18 0.79,3.35 -0.5,0.21 -0.55,-2.21 -0.51,0.24 0.3,2.5 -0.63,0.23 -0.36,-2.5 -0.56,0.17 0.17,2.77 -0.78,0.31 -0.2,-2.87 -0.46,-0.03 -0.22,2.65 -0.67,0.25 0.03,-4.57 -0.34,-0.2 -1.39,1.65 -0.32,-0.35 0.77,-2.04 z","forearm-flexors-right":"BM 65.2,42.42 L 63.92,29.01 L 61.76,27.8 L 62.79,29.73 L 62.4,34.55 L 64.22,42.25 Z","forearm-extensors-right":"BM 64.08,28.99 L 65.35,42.41 L 66.71,41.66 L 67,34.65 L 66.36,31.59 L 65.75,30.37 Z","spine":"Bm 51.73,14.79 0.54,25.33 0.49,-0.03 0.66,-25.34 -0.28,-0.84 -1.25,-4.9e-4 z","lower-back-erectors-left":"BM 52.1,37.31 L 49.54,36.47 L 50.24,40.79 L 52.2,42.03 L 52.2,40.27 L 52.15,40.28 Z","lower-back-ql-left":"BM 49.39,36.49 L 46.24,35.46 L 44.72,39.42 L 50.1,40.81 Z","lower-back-erectors-right":"BM 52.8,42.03 L 52.8,40.27 L 52.85,40.26 L 52.9,37.29 L 55.29,36.62 L 54.8,40.8 Z","lower-back-ql-right":"BM 55.44,36.64 L 55.98,36.47 L 58.32,35.72 L 59.66,39.45 L 54.95,40.82 Z","gluteus-medius-left":"BM 50.19,41.48 L 44.74,39.69 L 43.83,41.58 L 43.43,44.3 Z","gluteus-maximus-left":"BM 50.25,41.62 L 43.49,44.44 L 44.41,50.52 L 47.18,51.03 L 51.62,49.09 L 52.2,49.48 L 52.2,42.88 Z","gluteus-medius-right":"BM 55.27,41.08 L 61.35,45.52 L 60.64,42.15 L 59.74,39.86 Z","gluteus-maximus-right":"BM 55.19,41.2 L 52.8,42.88 L 52.8,49.48 L 53.57,49.09 L 57.68,50.76 L 60.5,50.6 L 61.27,45.64 Z","knee-back-left":"Bm 51.18,64.07 -1.21,3.01 0.71,0.27 0.9,3.52 -0.56,-4.01 z m -5.08,-3.15 0.63,1.86 0.17,2.03 0.61,1.93 -0.91,-0.09 -0.29,2.16 z","knee-back-right":"Bm 54.02,64.07 1.21,3.01 -0.71,0.27 -0.9,3.52 0.56,-4.01 z m 5.08,-3.15 -0.63,1.86 -0.17,2.03 -0.61,1.93 0.91,-0.09 0.29,2.16 z","calves-gastroc-medial-left":"BM 50.57,67.51 L 51.67,72.51 L 51.38,75.53 L 51.29,76.83 L 48.98,76.83 Z","calves-gastroc-lateral-left":"BM 50.22,67.51 L 48.63,76.83 L 46.28,76.83 L 45.53,74.26 L 46.78,67.09 Z","calves-soleus-left":"BM 46.39,77.17 L 51.27,77.17 L 50.7,85.6 L 49.04,86.23 Z","calves-gastroc-medial-right":"BM 54.63,67.51 L 53.53,72.51 L 53.82,75.53 L 53.9,76.83 L 56.21,76.83 Z","calves-gastroc-lateral-right":"BM 54.98,67.51 L 56.56,76.83 L 58.91,76.83 L 59.66,74.26 L 58.41,67.09 Z","calves-soleus-right":"BM 53.93,77.17 L 58.81,77.17 L 56.16,86.23 L 54.49,85.6 Z","foot-back-left":"BM 50.93,88.34 l 0.85,1.36 0.37,0.79 -0.16,1.22 -0.77,0.74 -1.51,0.13 -1.13,-0.29 -0.24,-0.96 0.81,-1.3 -0.23,-0.86 0.3,-0.84 -0.02,-1.82 1.54,-0.55 z m -1.2,0.47 0.16,1.26 -0.6,0.97 m -0.54,0.3 1.06,0.4 1.55,-0.65 z","hamstrings-medial-left":"BM 49.55,50.5 L 51.75,49.46 L 52.39,49.69 L 52.42,51.5 L 52.5,56.15 L 50.52,62.19 L 51,63.6 L 49.57,66.9 L 48.76,66.75 Z","hamstrings-lateral-left":"BM 49.4,50.5 L 48.6,66.75 L 47.8,66.6 L 47.3,64.48 L 47.13,62.72 L 44.71,54.56 L 44.37,50.92 L 47.2,51.5 Z","foot-back-right":"BM 54.26,88.34 l -0.85,1.36 -0.37,0.79 0.16,1.22 0.77,0.74 1.51,0.13 1.13,-0.29 0.24,-0.96 -0.81,-1.3 0.23,-0.86 -0.3,-0.84 0.02,-1.82 -1.54,-0.55 z m 1.2,0.47 -0.16,1.26 0.6,0.97 m 0.54,0.3 -1.06,0.4 -1.55,-0.65 z","hamstrings-medial-right":"BM 57.42,51.2 L 56.56,66.81 L 55.76,66.97 L 54.33,63.67 L 54.81,62.26 L 52.83,56.21 L 52.9,51.57 L 52.96,49.77 L 53.52,49.5 Z","hamstrings-lateral-right":"BM 57.58,51.2 L 60.62,50.95 L 60.62,54.63 L 58.2,62.79 L 58.03,64.55 L 57.52,66.66 L 56.72,66.81 Z"};
+/* muscolo → [nome, zone del disegno (prefissi), profondo?] */
+const MUSCLES = {
+  petto: ['Pettorali', ['chest-upper', 'chest-lower']],
+  'delt-ant': ['Deltoide anteriore', ['shoulder-front']],
+  'delt-lat': ['Deltoide laterale', ['shoulder-side']],
+  'delt-post': ['Deltoide posteriore', ['deltoid-rear']],
+  cuffia: ['Cuffia dei rotatori', ['deltoid-rear'], 1],
+  bicipiti: ['Bicipiti', ['biceps']],
+  tricipiti: ['Tricipiti', ['triceps-long', 'triceps-lateral']],
+  avambracci: ['Avambracci', ['forearm']],
+  'trap-sup': ['Trapezio superiore', ['traps-upper']],
+  romboidi: ['Romboidi e trapezio medio', ['traps-mid']],
+  'trap-inf': ['Trapezio inferiore', ['traps-lower']],
+  dorsali: ['Gran dorsale', ['lats-']],
+  serrato: ['Dentato anteriore', ['serratus-anterior']],
+  addome: ["Retto dell'addome", ['abs-']],
+  obliqui: ['Obliqui', ['obliques']],
+  erettori: ['Erettori spinali', ['lower-back-erectors', 'spine']],
+  ql: ['Quadrato dei lombi', ['lower-back-ql']],
+  'fless-anca': ["Flessori dell'anca", ['hip-flexor']],
+  glutei: ['Grande gluteo', ['gluteus-maximus']],
+  'gluteo-medio': ['Medio gluteo', ['gluteus-medius']],
+  quadricipiti: ['Quadricipiti', ['quads']],
+  adduttori: ['Adduttori', ['adductors']],
+  femorali: ['Femorali', ['hamstrings']],
+  gastrocnemio: ['Gastrocnemio', ['calves-gastroc']],
+  soleo: ['Soleo', ['calves-soleus']],
+  'tib-ant': ['Tibiale anteriore', ['tibialis-anterior']],
+  'tib-post': ['Tibiale posteriore', ['calves-soleus'], 1],
+  fhl: ["Flessore lungo dell'alluce", ['calves-soleus', 'foot-back'], 1],
+  piede: ['Muscoli del piede', ['foot-']],
+};
+/* esercizio → p principali, s secondari, side 'dx'/'sx' se lavora un lato solo.
+   Vale finché l'esercizio non ha un suo campo "muscles" (scritto dal modulo di modifica). */
+const EX_MUSCLES = {
+  'affondi': {p: ['quadricipiti', 'glutei'], s: ['gluteo-medio', 'adduttori', 'femorali']},
+  'anca-fisio': {p: ['gluteo-medio', 'glutei'], s: ['femorali']},
+  'bstance': {p: ['glutei'], s: ['femorali', 'gluteo-medio'], side: 'dx'},
+  'bulgarian': {p: ['quadricipiti', 'glutei'], s: ['gluteo-medio', 'adduttori']},
+  'cat-camel': {p: ['erettori', 'addome'], s: []},
+  'chest-press': {p: ['petto'], s: ['delt-ant', 'tricipiti']},
+  'clamshell-bridge': {p: ['gluteo-medio', 'glutei'], s: ['femorali']},
+  'clamshell': {p: ['gluteo-medio'], s: ['glutei']},
+  'croci': {p: ['petto'], s: ['delt-ant']},
+  'dead-bug': {p: ['addome'], s: ['obliqui', 'fless-anca']},
+  'equilibrio-instabile': {p: ['piede', 'tib-post'], s: ['gluteo-medio', 'tib-ant', 'soleo']},
+  'equilibrio-mono': {p: ['piede', 'tib-post'], s: ['gluteo-medio', 'tib-ant', 'soleo']},
+  'est-toracica': {p: ['erettori'], s: ['romboidi']},
+  'face-pull': {p: ['delt-post', 'romboidi', 'cuffia'], s: ['trap-inf', 'bicipiti']},
+  'flex-plantare': {p: ['gastrocnemio', 'soleo'], s: ['tib-post', 'fhl']},
+  'goblet-squat': {p: ['quadricipiti', 'glutei'], s: ['adduttori', 'addome']},
+  'hamstring-stretch': {p: ['femorali'], s: ['gastrocnemio']},
+  'heel-drop': {p: ['gastrocnemio', 'soleo'], s: ['tib-post', 'piede']},
+  'heel-raise-bi': {p: ['gastrocnemio', 'soleo'], s: ['tib-post', 'fhl']},
+  'heel-raise-carico': {p: ['gastrocnemio', 'soleo'], s: ['tib-post', 'fhl']},
+  'heel-raise-mono': {p: ['gastrocnemio', 'soleo'], s: ['tib-post', 'fhl']},
+  'hip-drop': {p: ['gluteo-medio', 'glutei'], s: ['obliqui']},
+  'hip-switch': {p: ['gluteo-medio', 'fless-anca'], s: ['adduttori', 'glutei']},
+  'hip-thrust': {p: ['glutei'], s: ['femorali', 'gluteo-medio']},
+  'iso-fhl': {p: ['fhl'], s: ['piede']},
+  'iso-tp': {p: ['tib-post'], s: ['piede']},
+  'ityw': {p: ['trap-inf', 'romboidi'], s: ['delt-post', 'cuffia']},
+  'lanci-diagonali': {p: ['obliqui'], s: ['delt-ant', 'addome']},
+  'lat-pulldown': {p: ['dorsali'], s: ['bicipiti', 'trap-inf', 'romboidi']},
+  'leg-curl': {p: ['femorali'], s: ['glutei', 'gastrocnemio']},
+  'mob-alluce': {p: ['fhl', 'piede'], s: []},
+  'no-money': {p: ['cuffia'], s: ['delt-post', 'romboidi']},
+  'pike-pushup': {p: ['delt-ant', 'tricipiti'], s: ['trap-sup', 'petto']},
+  'plank-laterale': {p: ['obliqui', 'gluteo-medio'], s: ['addome', 'ql']},
+  'pliometria': {p: ['gastrocnemio', 'soleo', 'quadricipiti'], s: ['glutei', 'piede']},
+  'pogo': {p: ['gastrocnemio', 'soleo'], s: ['piede', 'tib-ant']},
+  'pull-apart': {p: ['delt-post', 'romboidi'], s: ['trap-inf', 'cuffia']},
+  'pushup-leggeri': {p: ['petto'], s: ['tricipiti', 'delt-ant']},
+  'pushup-plus': {p: ['serrato'], s: ['petto', 'delt-ant']},
+  'pushup': {p: ['petto', 'tricipiti'], s: ['delt-ant', 'addome', 'serrato']},
+  'rematore': {p: ['dorsali', 'romboidi'], s: ['bicipiti', 'delt-post']},
+  'rotazioni-braccia': {p: ['delt-lat'], s: ['delt-ant', 'delt-post']},
+  'seiza': {p: ['tib-ant', 'piede'], s: ['quadricipiti']},
+  'single-bridge': {p: ['glutei'], s: ['femorali'], side: 'dx'},
+  'sl-bridge-thread': {p: ['glutei', 'obliqui'], s: ['femorali', 'gluteo-medio']},
+  'step-up': {p: ['quadricipiti', 'glutei'], s: ['gluteo-medio', 'tib-post']},
+  'stretch-dorso-piede': {p: ['tib-ant', 'piede'], s: []},
+  'stretch-polpaccio': {p: ['gastrocnemio', 'soleo'], s: []},
+  'thread-needle': {p: ['obliqui', 'romboidi'], s: ['delt-post']},
+  'toe-flex': {p: ['fhl'], s: ['piede']},
+  'wall-angel': {p: ['trap-inf', 'romboidi'], s: ['cuffia', 'serrato']},
+  'y-raise': {p: ['trap-inf'], s: ['romboidi', 'delt-post']},
+};
+function musclesOf(e) {
+  if (!e) return null;
+  const m = e.muscles && Array.isArray(e.muscles.p) ? e.muscles : EX_MUSCLES[e.id || e.ex];
+  return m && (m.p.length || (m.s || []).length) ? {p: m.p || [], s: m.s || [], side: m.side || ''} : null;
+}
+/* zone del disegno → 'p' o 's' (il principale vince) */
+function zonesOf(m) {
+  const z = {}, put = (k, lvl) => {
+    const def = MUSCLES[k]; if (!def) return;
+    for (const id in BODY) {
+      if (m.side && /-(left|right)$/.test(id) && !id.endsWith(m.side === 'dx' ? '-right' : '-left')) continue;
+      if (def[1].some(pre => id.startsWith(pre)) && z[id] !== 'p') z[id] = lvl;
+    }
+  };
+  (m.s || []).forEach(k => put(k, 's')); m.p.forEach(k => put(k, 'p'));
+  return z;
+}
+function bodySvg(z, back, label) {
+  let d = '';
+  for (const id in BODY) if ((BODY[id][0] === 'B') === back) d += `<path d="${BODY[id].slice(1)}"${z[id] ? ` class="${z[id]}"` : ''}/>`;
+  return `<svg class="bm-fig" viewBox="${back ? '37 0 35 93' : '0 0 35 93'}" aria-hidden="true"><title>${label}</title>${d}</svg>`;
+}
+/* figure fronte e retro; size 'sm' per la scheda dell'allenamento */
+function bodyFigs(z, size = '') {
+  return `<div class="bm-figs ${size}"><figure>${bodySvg(z, false, 'Davanti')}<figcaption>Davanti</figcaption></figure><figure>${bodySvg(z, true, 'Dietro')}<figcaption>Dietro</figcaption></figure></div>`;
+}
+const musName = k => MUSCLES[k] ? MUSCLES[k][0] + (MUSCLES[k][2] ? ' (profondo)' : '') : k;
+function muscleBlock(e, size = '', cls = '') {
+  const m = musclesOf(e); if (!m) return '';
+  const side = m.side ? ` · solo ${m.side === 'dx' ? 'destra' : 'sinistra'}` : '';
+  const alt = `Muscoli: principali ${m.p.map(musName).join(', ')}${m.s.length ? '; secondari ' + m.s.map(musName).join(', ') : ''}${side}`;
+  return `<div class="bmap ${size} ${cls}" role="img" aria-label="${esc(alt)}">${bodyFigs(zonesOf(m), size)}
+    <dl class="bm-leg" aria-hidden="true"><div><dt><i class="bm-dot p"></i>Principali${side}</dt><dd>${esc(m.p.map(musName).join(' · '))}</dd></div>
+    ${m.s.length ? `<div><dt><i class="bm-dot s"></i>Secondari</dt><dd>${esc(m.s.map(musName).join(' · '))}</dd></div>` : ''}</dl></div>`;
+}
+/* muscoli di una seduta: principali dove hai fatto serie come muscolo principale */
+function sessionMuscles(s) {
+  const z = {}, pm = {}, sm = {};
+  for (const it of s.items || []) {
+    if (it.warmup || !(it.log || []).length) continue;
+    const m = musclesOf(S.ex[it.ex] || {id: it.ex}); if (!m) continue;
+    const zz = zonesOf(m);
+    for (const id in zz) if (z[id] !== 'p') z[id] = zz[id];
+    m.p.forEach(k => pm[k] = (pm[k] || 0) + it.log.length);
+    m.s.forEach(k => sm[k] = (sm[k] || 0) + it.log.length);
+  }
+  if (!Object.keys(z).length) return '';
+  const pk = Object.keys(pm).sort((a, b) => pm[b] - pm[a]), sk = Object.keys(sm).filter(k => !pm[k]).sort((a, b) => sm[b] - sm[a]);
+  return `<section class="stack"><div class="sec-head"><h2>Muscoli lavorati</h2></div>
+    <div class="card bmap" role="img" aria-label="${esc('Muscoli lavorati: ' + pk.map(musName).join(', '))}">${bodyFigs(z)}
+    <dl class="bm-leg" aria-hidden="true"><div><dt><i class="bm-dot p"></i>Principali</dt><dd>${esc(pk.map(k => `${musName(k)} (${pm[k]} serie)`).join(' · '))}</dd></div>
+    ${sk.length ? `<div><dt><i class="bm-dot s"></i>Secondari</dt><dd>${esc(sk.map(musName).join(' · '))}</dd></div>` : ''}</dl></div></section>`;
+}
+/* modulo di modifica: un tocco = principale, due = secondario, tre = niente */
+function muscleEditor(e) {
+  if (!S.musDraft || S.musDraft.id !== (e.id || '__new')) {
+    const m = musclesOf(e) || {p: [], s: [], side: ''}, st = {};
+    m.p.forEach(k => st[k] = 'p'); m.s.forEach(k => st[k] = 's');
+    S.musDraft = {id: e.id || '__new', st, side: m.side || ''};
+  }
+  const st = S.musDraft.st;
+  return `<div class="fld"><span>Muscoli · un tocco principale, due secondario</span><div class="mus-edit">
+      <div class="bm-prev" id="mus-prev">${bodyFigs(zonesOf(musDraftOut()), 'sm')}</div>
+      <div class="chips">${Object.keys(MUSCLES).map(k => `<button class="chip mchip" type="button" data-a="mus-cyc" data-v="${k}" data-s="${st[k] || ''}">${esc(MUSCLES[k][0])}</button>`).join('')}</div></div></div>`;
+}
+function musDraftOut() {
+  const st = S.musDraft.st, ks = Object.keys(MUSCLES);
+  return {p: ks.filter(k => st[k] === 'p'), s: ks.filter(k => st[k] === 's'), side: S.musDraft.side};
+}
+
 function viewEsercizio() {
   const isNew = S.param === '__new';
   const e = isNew ? {id:'', name:'', cat:'tirata', status:'provare', foot:'ok', kind:'ipertrofia', unit:'reps', perSide:false, sets:3, min:8, max:12, rest:60, load:'corpo', equip:[], cue:'', notes:[], progression:''} : S.ex[S.param];
@@ -1657,6 +1844,7 @@ function viewEsercizio() {
           <label class="fld"><span>Rec ″</span><input id="f-rest" name="rest" type="number" min="0" value="${esc(e.rest)}"></label></div>
         <label class="check"><input type="checkbox" id="f-side" name="perSide" ${e.perSide ? 'checked' : ''}> Dose per lato</label>
         <div class="fld"><span>Attrezzi (ne basta uno)</span><div class="chips">${Object.entries(EQUIP).map(([k, l]) => `<label class="chip"><input type="checkbox" name="equip" value="${k}" ${(e.equip || []).includes(k) ? 'checked' : ''}> ${l}</label>`).join('')}</div></div>
+        ${muscleEditor(e)}
         <label class="fld"><span>Esecuzione in una riga</span><textarea id="f-cue" name="cue" style="min-height:60px">${esc(e.cue)}</textarea></label>
         <label class="fld"><span>Come progredire</span><textarea id="f-prog" name="progression" style="min-height:60px">${esc(e.progression)}</textarea></label>
         <label class="fld"><span>Note (una per riga, "Titolo: testo")</span><textarea id="f-notes" name="notes">${esc((e.notes || []).map(n => n[0] + ': ' + n[1]).join('\n'))}</textarea></label>
@@ -1669,6 +1857,7 @@ function viewEsercizio() {
         <span class="tag${e.foot === 'cautela' ? ' warn' : e.foot === 'vietato' ? ' bad' : ''}">${esc(FOOT[e.foot])}</span>
         <span class="tag">${esc(doseStr(e))} · rec ${e.rest}″</span>${(e.equip || []).map(q => `<span class="tag">${esc(EQUIP[q])}</span>`).join('')}</div></header>
     ${e.cue ? `<p>${esc(e.cue)}</p>` : ''}
+    ${muscleBlock(e, '', 'card')}
     ${(e.notes || []).length ? `<dl class="notes card">${e.notes.map(([k, v]) => `<div class="note${/errore/i.test(k) ? ' err' : ''}"><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join('')}</dl>` : ''}
     ${e.progression ? `<div class="card"><span class="eyebrow">Come progredire</span><p>${esc(e.progression)}</p></div>` : ''}
     <section class="stack"><div class="sec-head"><h2>Storico</h2><p class="note">${h.length ? `${h.length} sedute` : 'Ancora nessuna serie registrata'}</p></div>
@@ -1724,6 +1913,7 @@ function viewSeduta() {
       <div class="tile"><span class="l">Serie</span><span class="v">${sets}</span></div>
       <div class="tile"><span class="l">Tirata / spinta</span><span class="v">${setsIn(s, ['tirata'])}<span class="muted">/</span>${setsIn(s, ['spinta'])}</span></div>
       <div class="tile"><span class="l">Progressi</span><span class="v">${ups}</span></div></div>
+    ${sessionMuscles(s)}
     <section class="stack"><div class="sec-head"><h2>Rispetto all'ultima volta</h2></div>
     <div class="list">${items.map((it, i) => `<div class="lrow" style="cursor:default"><span class="icode mono">${esc(itemCode(items, i))}</span><span class="main"><span class="name">${esc(it.name)}</span>
       <span class="sub">${(it.log || []).length ? esc(fmtLog(it.log, it.unit)) : 'non fatto'}</span>${it.userNote ? `<span class="unote">“${esc(it.userNote)}”</span>` : ''}</span>
@@ -1778,6 +1968,7 @@ function showExInfo(id) {
   S.picker = null;
   $('#sheet').innerHTML = `<div class="row"><h3>${esc(e.name)}</h3><span class="spacer"></span><button class="icon-btn" type="button" data-a="pick-close" aria-label="Chiudi">×</button></div>
     <p class="mono small muted">${esc(doseStr(e))} · rec ${e.rest}″</p>${e.cue ? `<p>${esc(e.cue)}</p>` : ''}
+    ${muscleBlock(e, 'sm')}
     ${(e.notes || []).length ? `<dl class="notes">${e.notes.map(([k, v]) => `<div class="note${/errore/i.test(k) ? ' err' : ''}"><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join('')}</dl>` : ''}
     ${e.progression ? `<p class="small"><b>Progressione:</b> ${esc(e.progression)}</p>` : ''}`;
   const was = !$('#overlay').hidden; $('#overlay').hidden = false; if (!was) sheetIn();
@@ -1864,9 +2055,10 @@ document.addEventListener('click', async ev => {
     case 'exf-cat': S.exFilter.cat = v; draw(); break;
     case 'exf-st': S.exFilter.status = v; draw(); break;
     case 'ex-open': go('esercizio', id); break;
-    case 'ex-new': go('esercizio', '__new'); break;
-    case 'ex-edit': S.exEdit = true; draw(); break;
-    case 'ex-cancel': S.exEdit = false; draw(); break;
+    case 'ex-new': S.musDraft = null; go('esercizio', '__new'); break;
+    case 'ex-edit': S.exEdit = true; S.musDraft = null; draw(); break;
+    case 'ex-cancel': S.exEdit = false; S.musDraft = null; draw(); break;
+    case 'mus-cyc': { const st = S.musDraft.st; st[v] = st[v] === 'p' ? 's' : st[v] === 's' ? '' : 'p'; b.dataset.s = st[v]; $('#mus-prev').innerHTML = bodyFigs(zonesOf(musDraftOut()), 'sm'); break; }
     case 'ex-info': if (id && S.ex[id]) showExInfo(id); break;
 
     case 'pick-close': dismissSheet(); break;
@@ -1909,11 +2101,12 @@ document.addEventListener('submit', async ev => {
     cue: String(f.get('cue') || '').trim(), progression: String(f.get('progression') || '').trim(),
     notes: String(f.get('notes') || '').split('\n').map(l => l.trim()).filter(Boolean).map(l => { const k = l.indexOf(':'); return k > 0 ? [l.slice(0, k).trim(), l.slice(k + 1).trim()] : ['Nota', l]; })};
   if (!data.name) { toast('Il nome è obbligatorio'); return; }
+  if (S.musDraft) { const m = musDraftOut(); data.muscles = m.side ? m : {p: m.p, s: m.s}; }
   const isNew = S.param === '__new';
   const id = isNew ? slug(data.name) + '-' + uid() : S.param;
   const prev = isNew ? {} : strip(S.ex[id]);
   const ok = await writeDoc('exercises/' + id, Object.assign(prev, data), 'Esercizio salvato');
-  if (ok) { S.ex[id] = Object.assign({id}, prev, data); S.exEdit = false; go('esercizio', id); }
+  if (ok) { S.ex[id] = Object.assign({id}, prev, data); S.exEdit = false; S.musDraft = null; go('esercizio', id); }
 });
 document.addEventListener('keydown', ev => {
   if ($('#overlay').hidden) return;
