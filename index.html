@@ -818,7 +818,7 @@ const FOCUS = {
   spinta:  {label:'Spinta e scapole',  slots:['spinta','scapole','spinta','scapole','tirata']},
   lower:   {label:'Lower e core',      slots:['lower','lower','core','lower','core','core']},
   full:    {label:'Full body',         slots:['spinta','tirata','lower','tirata','spinta','core','tirata']},
-  mobilita:{label:'Mobilità',          slots:['mobilita','mobilita','mobilita','mobilita','mobilita','mobilita','caviglia','caviglia']}
+  mobilita:{label:'Mobilità',          slots:['mobilita','mobilita','mobilita','mobilita','mobilita','mobilita','mobilita']}
 };
 const UPPER = ['tirata','spinta','scapole'];
 const TABOF = {oggi:'oggi', genera:'oggi', sessione:'oggi', schede:'schede', scheda:'schede', esercizi:'esercizi', esercizio:'esercizi', storico:'storico', seduta:'storico', profilo:'profilo'};
@@ -1070,7 +1070,7 @@ function viewGenera() {
           <span class="sub">${esc(doseStr(it))} · rec ${it.rest}″${it.note ? ' · ' + esc(it.note) : ''}</span></div></div>`).join('')}</div>
         <div class="row"><button class="btn primary" type="button" data-a="gen-start">Inizia questa seduta</button><button class="btn" type="button" data-a="gen-save">Salva come scheda</button></div></section>` : '';
   return `<header class="top"><button class="btn sm ghost" type="button" data-a="go" data-v="oggi" style="align-self:flex-start">← Oggi</button>
-      <h1>Seduta <span>al volo</span></h1><p class="muted">Scegli tempo, focus e attrezzi. Le regole del tuo percorso sono già dentro: piede, tirata ≥ spinta, niente A e C attaccate.</p></header>
+      <h1>Seduta <span>al volo</span></h1><p class="muted">Scegli tempo, focus e attrezzi. Le regole del tuo percorso sono già dentro: tirata ≥ spinta, niente A e C attaccate.</p></header>
     <div class="card form">
       <div class="fld"><span>Tempo</span><div class="chips">${minutes.map(m => `<button class="chip" type="button" data-a="gen-min" data-v="${m}" aria-pressed="${g.minutes === m}">${m}′</button>`).join('')}</div></div>
       <div class="fld"><span>Focus</span><div class="chips">${Object.entries(FOCUS).map(([k, f]) => `<button class="chip" type="button" data-a="gen-focus" data-v="${k}" aria-pressed="${g.focus === k}">${f.label}</button>`).join('')}</div></div>
@@ -1093,7 +1093,7 @@ function itemCode(items, i) {
 }
 
 function usable(e, equip) {
-  if (['bloccato','archiviato'].includes(e.status) || e.foot === 'vietato' || e.cat === 'fisio') return false;
+  if (['bloccato','archiviato'].includes(e.status) || e.cat === 'fisio') return false;
   const eq = e.equip || [];
   return !eq.length || eq.some(q => equip.includes(q));
 }
@@ -1133,7 +1133,7 @@ function genRules(p) {
 
 function claudePrompt(p) {
   const arch = Object.values(S.ex).filter(e => e.status !== 'archiviato').map(e =>
-    `${e.id} | ${e.name} | ${CATS[e.cat] || e.cat} | ${e.status} | piede: ${e.foot} | tipo: ${e.kind} | ${doseStr(e)} | rec ${e.rest}″ | attrezzi: ${(e.equip || []).join('/') || 'corpo libero'}`).join('\n');
+    `${e.id} | ${e.name} | ${CATS[e.cat] || e.cat} | ${e.status} | tipo: ${e.kind} | ${doseStr(e)} | rec ${e.rest}″ | attrezzi: ${(e.equip || []).join('/') || 'corpo libero'}`).join('\n');
   const cut = (t, n) => String(t).replace(/\s+/g, ' ').trim().slice(0, n);
   const hist = finished().slice(0, 10).map(s => `${s.date} · ${s.title}: ` + (s.items || []).filter(i => !i.warmup && ((i.log || []).length || i.userNote))
     .map(i => `${i.name} ${fmtLog(i.log, i.unit)}${i.userNote ? ` (mia nota: ${cut(i.userNote, 200)})` : ''}`).join('; ')
@@ -1143,7 +1143,7 @@ function claudePrompt(p) {
 IL MIO PERCORSO
 ${S.settings.profile || ''}
 
-FISIOTERAPIA: non includere esercizi di fisioterapia del piede, li seguo in un'altra app.
+FISIOTERAPIA: non includere esercizi di fisioterapia, li seguo in un'altra app.
 
 RICHIESTA DI OGGI
 - Tempo totale: ${p.minutes} minuti, riscaldamento compreso
@@ -1151,14 +1151,14 @@ RICHIESTA DI OGGI
 - Attrezzi disponibili: ${p.equip.map(q => EQUIP[q]).join(', ') || 'solo corpo libero'} (corpo libero, sedia, muro, porta e asciugamano ci sono sempre)
 - Note: ${p.text || 'nessuna'}
 
-ARCHIVIO ESERCIZI (id | nome | categoria | stato | piede | tipo | dose abituale | recupero | attrezzi)
+ARCHIVIO ESERCIZI (id | nome | categoria | stato | tipo | dose abituale | recupero | attrezzi)
 ${arch}
 
 ULTIME SEDUTE (reps per serie — carico · RIR; le mie note contano: fastidi e sensazioni vanno rispettati)
 ${hist}
 
 REGOLE
-- Usa gli esercizi dell'archivio con il loro id. Mai stato "bloccato" o piede "vietato". Preferisci "attivo"; al massimo un esercizio "provare".
+- Usa gli esercizi dell'archivio con il loro id. Mai stato "bloccato". Preferisci "attivo"; al massimo un esercizio "provare".
 - Solo se serve davvero, proponi un esercizio nuovo con "ex": null.
 - Volume di tirata ≥ spinta. Massimo 6 esercizi principali e 20 serie dure. Se ieri ho fatto parte alta, oggi niente parte alta pesante.
 - Per le superserie usa lo stesso valore "pair" (A, B, C) su esercizi consecutivi; il recupero va sull'ultimo della coppia.
@@ -1167,7 +1167,7 @@ REGOLE
 - "unit": "sec" per tenute e isometrie, altrimenti "reps". "perSide": true se la dose è per lato.
 
 Rispondi SOLO con un oggetto JSON:
-{"title": "nome breve", "why": "1-2 frasi sul perché di queste scelte", "items": [{"ex": "id-archivio o null", "name": "nome", "cat": "tirata|spinta|scapole|lower|core|mobilita|caviglia", "sets": 3, "min": 10, "max": 15, "unit": "reps", "perSide": false, "rest": 90, "pair": null, "warmup": false, "block": "nome della sezione, es. Riscaldamento, Petto + Schiena, Lower + Core", "note": "indicazione breve o stringa vuota"}]}`;
+{"title": "nome breve", "why": "1-2 frasi sul perché di queste scelte", "items": [{"ex": "id-archivio o null", "name": "nome", "cat": "tirata|spinta|scapole|lower|core|mobilita", "sets": 3, "min": 10, "max": 15, "unit": "reps", "perSide": false, "rest": 90, "pair": null, "warmup": false, "block": "nome della sezione, es. Riscaldamento, Petto + Schiena, Lower + Core", "note": "indicazione breve o stringa vuota"}]}`;
 }
 function normClaude(data) {
   if (!data || !Array.isArray(data.items) || !data.items.length) throw {code:'shape'};
@@ -1271,7 +1271,7 @@ function viewWorkout() {
   const other = !m.live && S.active;
   const back = m.live ? 'oggi' : (S.back || 'schede');
   const paletti = [...(m.paletti && m.paletti.length ? m.paletti : String(m.rules || '').split('\n').map(x => x.trim()).filter(Boolean))];
-  paletti.push('**Tensione sì, dolore no**: un fastidio a spalla o piede che cresce serie dopo serie è il segnale per fermarti');
+  paletti.push('**Tensione sì, dolore no**: un fastidio a spalla o schiena che cresce serie dopo serie è il segnale per fermarti');
   let n = 0;
   const secs = blocksOf(items).map(b => {
     const num = b.title === 'Riscaldamento' ? 0 : ++n;
@@ -1302,7 +1302,7 @@ function viewWorkout() {
     </header>
     ${secs}
     ${m.live ? `<section class="stack"><div class="sec-head"><h2>Note per Claude</h2><p class="note">Come è andata: fastidi, sensazioni, cosa cambiare. Claude le legge quando prepara le prossime sedute.</p></div>
-      <div class="card"><textarea class="notebox" id="sess-note" rows="4" placeholder="Es. spalla destra tirava nell'ultimo face pull, rematore facile con 4 kg, piede tranquillo">${esc(S.active.note || '')}</textarea>
+      <div class="card"><textarea class="notebox" id="sess-note" rows="4" placeholder="Es. spalla destra tirava nell'ultimo face pull, rematore facile con 4 kg">${esc(S.active.note || '')}</textarea>
         <p class="dict">${DICT}</p></div></section>` : ''}
     <section class="stack"><div class="sec-head"><h2>Paletti</h2></div>
       <div class="card"><ul class="rules">${paletti.map(p => `<li>${md(p)}</li>`).join('')}</ul></div>
@@ -1315,7 +1315,7 @@ function viewWorkout() {
 }
 function exRow(m, i) {
   const it = m.items[i], e = S.ex[it.ex] || {};
-  const flag = it.flag || e.flag || (e.foot === 'cautela' ? 'piede' : '');
+  const flag = it.flag || e.flag || '';
   const u = unitMark(it.unit);
   const dots = [];
   for (let j = 0; j < Math.max(it.sets, it.log.length); j++) {
@@ -1636,8 +1636,7 @@ function exMatches(e) {
 function exRows(list, act = 'ex-open') {
   if (!list.length) return '<div class="titem muted small">Nessun esercizio con questi filtri.</div>';
   return list.map(e => `<button class="lrow" type="button" data-a="${act}" data-id="${esc(e.id)}">${miniFig(e)}<span class="main"><span class="name">${esc(e.name)}
-    ${e.status !== 'attivo' ? `<span class="tag${e.status === 'bloccato' ? ' bad' : e.status === 'provare' ? ' acc' : ''}">${esc(STATUS[e.status] || e.status)}</span>` : ''}
-    ${e.foot === 'cautela' ? '<span class="tag warn">piede</span>' : e.foot === 'vietato' ? '<span class="tag bad">piede ⛔</span>' : ''}</span>
+    ${e.status !== 'attivo' ? `<span class="tag${e.status === 'bloccato' ? ' bad' : e.status === 'provare' ? ' acc' : ''}">${esc(STATUS[e.status] || e.status)}</span>` : ''}</span>
     <span class="sub">${esc(CATS[e.cat] || e.cat)} · ${esc(doseStr(e))}</span></span><span class="chev">›</span></button>`).join('');
 }
 function sortedEx() { return Object.values(S.ex).filter(e => e.cat !== 'fisio').sort((a, b) => Object.keys(CATS).indexOf(a.cat) - Object.keys(CATS).indexOf(b.cat) || a.name.localeCompare(b.name)); }
@@ -1646,7 +1645,7 @@ function viewEsercizi() {
   const list = sortedEx().filter(exMatches);
   return `<header class="top"><div class="eyebrow">${Object.keys(S.ex).length} esercizi</div><h1>Archivio <span>esercizi</span></h1></header>
     <input class="search" id="ex-q" type="search" placeholder="Cerca un esercizio" value="${esc(f.q)}" aria-label="Cerca un esercizio">
-    <div class="chips">${['tutte', ...Object.keys(CATS).filter(c => c !== 'fisio')].map(c => `<button class="chip" type="button" data-a="exf-cat" data-v="${c}" aria-pressed="${f.cat === c}">${c === 'tutte' ? 'Tutte' : CATS[c]}</button>`).join('')}</div>
+    <div class="chips">${['tutte', ...Object.keys(CATS).filter(c => !['fisio','caviglia'].includes(c))].map(c => `<button class="chip" type="button" data-a="exf-cat" data-v="${c}" aria-pressed="${f.cat === c}">${c === 'tutte' ? 'Tutte' : CATS[c]}</button>`).join('')}</div>
     <div class="chips">${[['usabili','Usabili'],['tutti','Tutti'],['bloccati','Bloccati e archiviati']].map(([k, l]) => `<button class="chip" type="button" data-a="exf-st" data-v="${k}" aria-pressed="${f.status === k}">${l}</button>`).join('')}</div>
     <div class="list" id="ex-list">${exRows(list)}</div>
     <button class="btn" type="button" data-a="ex-new">+ Nuovo esercizio</button>`;
@@ -1863,7 +1862,6 @@ function viewEsercizio() {
         <label class="fld"><span>Nome</span><input id="f-name" name="name" required value="${esc(e.name)}"></label>
         <div class="grid2"><label class="fld"><span>Categoria</span><select id="f-cat" name="cat">${opt(CATS, e.cat)}</select></label>
           <label class="fld"><span>Stato</span><select id="f-status" name="status">${opt(STATUS, e.status)}</select></label>
-          <label class="fld"><span>Piede sinistro</span><select id="f-foot" name="foot">${opt(FOOT, e.foot)}</select></label>
           <label class="fld"><span>Tipo di lavoro</span><select id="f-kind" name="kind">${opt(KINDS, e.kind)}</select></label>
           <label class="fld"><span>Carico</span><select id="f-load" name="load">${opt(LOADS, e.load)}</select></label>
           <label class="fld"><span>Misura</span><select id="f-unit" name="unit">${opt({reps:'Ripetizioni', sec:'Secondi'}, e.unit)}</select></label></div>
@@ -1883,7 +1881,6 @@ function viewEsercizio() {
   const h = history(e.id);
   return `<header class="top">${back}<div class="eyebrow">${esc(CATS[e.cat] || e.cat)} · ${esc(KINDS[e.kind] || '')}</div><h1>${esc(e.name)}</h1>
       <div class="chips"><span class="tag${e.status === 'bloccato' ? ' bad' : e.status === 'attivo' ? ' ok' : ' acc'}">${esc(STATUS[e.status])}</span>
-        <span class="tag${e.foot === 'cautela' ? ' warn' : e.foot === 'vietato' ? ' bad' : ''}">${esc(FOOT[e.foot])}</span>
         <span class="tag">${esc(doseStr(e))} · rec ${e.rest}″</span>${(e.equip || []).map(q => `<span class="tag">${esc(EQUIP[q])}</span>`).join('')}</div></header>
     ${e.cue ? `<p>${esc(e.cue)}</p>` : ''}
     ${muscleBlock(e, '', 'card')}
@@ -1974,7 +1971,7 @@ function drawPicker() {
   const p = S.picker, sh = $('#sheet');
   sh.innerHTML = `<div class="row"><h3>Scegli un esercizio</h3><span class="spacer"></span><button class="icon-btn" type="button" data-a="pick-close" aria-label="Chiudi">×</button></div>
     <input class="search" id="pick-q" type="search" placeholder="Cerca" aria-label="Cerca un esercizio">
-    <div class="chips">${['tutte', ...Object.keys(CATS).filter(c => c !== 'fisio')].map(c => `<button class="chip" type="button" data-a="pick-cat" data-v="${c}" aria-pressed="${p.cat === c}">${c === 'tutte' ? 'Tutte' : CATS[c]}</button>`).join('')}</div>
+    <div class="chips">${['tutte', ...Object.keys(CATS).filter(c => !['fisio','caviglia'].includes(c))].map(c => `<button class="chip" type="button" data-a="pick-cat" data-v="${c}" aria-pressed="${p.cat === c}">${c === 'tutte' ? 'Tutte' : CATS[c]}</button>`).join('')}</div>
     <div class="list" id="pick-list"></div>`;
   $('#overlay').hidden = false;
   drawPickerList();
@@ -2113,7 +2110,7 @@ document.addEventListener('submit', async ev => {
   if (ev.target.id !== 'ex-form') return;
   ev.preventDefault();
   const f = new FormData(ev.target), num = k => Math.max(0, Math.round(Number(f.get(k)) || 0));
-  const data = {name: String(f.get('name')).trim(), cat: f.get('cat'), status: f.get('status'), foot: f.get('foot'), kind: f.get('kind'), load: f.get('load'), unit: f.get('unit'),
+  const data = {name: String(f.get('name')).trim(), cat: f.get('cat'), status: f.get('status'), foot: f.get('foot') || 'ok', kind: f.get('kind'), load: f.get('load'), unit: f.get('unit'),
     sets: Math.max(1, num('sets')), min: num('min'), max: Math.max(num('min'), num('max')), rest: num('rest'), perSide: f.get('perSide') === 'on', equip: f.getAll('equip'),
     cue: String(f.get('cue') || '').trim(), progression: String(f.get('progression') || '').trim(),
     notes: String(f.get('notes') || '').split('\n').map(l => l.trim()).filter(Boolean).map(l => { const k = l.indexOf(':'); return k > 0 ? [l.slice(0, k).trim(), l.slice(k + 1).trim()] : ['Nota', l]; })};
